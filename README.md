@@ -1,8 +1,7 @@
-# AutoCAD MCP Plugin
+# DeepBIM-MCP Plugin
 
-AutoCAD .NET plugin that exposes AutoCAD functionality via the MCP (Model Context Protocol) over TCP/HTTP, allowing AI assistants (Claude, etc.) to interact with AutoCAD.
+Connect AutoCAD with AI assistants via MCP over TCP/HTTP, enabling drawing inspection, project data access, and supported AutoCAD automation.
 
-Ported from [revit-mcp-plugin](../revit-mcp-plugin) — see [PORTING_NOTES.md](./PORTING_NOTES.md) for mapping details.
 
 ---
 
