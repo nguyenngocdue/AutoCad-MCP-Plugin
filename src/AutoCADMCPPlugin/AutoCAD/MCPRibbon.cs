@@ -67,6 +67,17 @@ namespace autocad_mcp_plugin.AutoCAD
                 panelSource.Items.Add(rowStart);
                 panelSource.Items.Add(new RibbonSeparator());
 
+                // ── Settings button ───────────────────────────────────────────
+                panelSource.Items.Add(MakeButton(
+                    id:      "btn_mcpsettings",
+                    label:   "Settings",
+                    tooltip: "Open Command Settings (MCPSETTINGS)",
+                    command: "MCPSETTINGS",
+                    color:   Colors.SlateGray,
+                    size:    RibbonItemSize.Large));
+
+                panelSource.Items.Add(new RibbonSeparator());
+
                 // ── Status button ─────────────────────────────────────────────
                 panelSource.Items.Add(MakeButton(
                     id:      "btn_mcpstatus",

@@ -1,6 +1,7 @@
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Runtime;
 using autocad_mcp_plugin.Core;
+using autocad_mcp_plugin.UI;
 
 namespace autocad_mcp_plugin.AutoCAD
 {
@@ -81,6 +82,22 @@ namespace autocad_mcp_plugin.AutoCAD
             else
             {
                 ed.WriteMessage("\n[DeepBim-MCP] Status: STOPPED\n");
+            }
+        }
+
+        /// <summary>Open the Command Settings UI window.</summary>
+        [CommandMethod("MCPSETTINGS")]
+        public void McpSettings()
+        {
+            try
+            {
+                var win = new SettingsWindow();
+                Autodesk.AutoCAD.ApplicationServices.Application.ShowModalWindow(win);
+            }
+            catch (global::System.Exception ex)
+            {
+                var doc = Application.DocumentManager.MdiActiveDocument;
+                doc?.Editor.WriteMessage($"\n[DeepBim-MCP] ERROR opening settings: {ex.Message}\n");
             }
         }
     }

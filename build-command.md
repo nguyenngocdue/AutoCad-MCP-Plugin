@@ -10,10 +10,12 @@ dotnet clean src/AutoCADMCPPlugin/AutoCADMCPPlugin.csproj; dotnet build src/Auto
 
 ```powershell
 cd installers\msi
-dotnet build DeepBimMCP.AutoCAD.Installer.wixproj --configuration Release /p:ProductVersion=1.0.0
+dotnet build DeepBimMCP.AutoCAD.Installer.wixproj --configuration Release /p:ProductVersion=1.0.0 /p:AutoCADVersion=2025
 ```
 
-Output: `installers\msi\output\DeepBimMCP-AutoCAD-v1.0.0.msi`
+Output: `installers\msi\bin\Release\DeepBimMCP-AutoCAD2025-v1.0.0.msi`
+
+> `AutoCADVersion` có thể là `2024`, `2025`, `2026`, ... (mặc định: `2025`)
 
 ## 3. Install
 
@@ -34,7 +36,7 @@ After installing, update `.vscode/mcp.json`:
 
 ```powershell
 # Full pipeline (build C# + server + MSI)
-.\installers\msi\Build-Installer.ps1
+.\installers\msi\Build-Installer.ps1 -AutoCADVersion 2025
 
 # Uninstall
 msiexec /x "installers\msi\output\DeepBimMCP-AutoCAD-v1.0.0.msi" /qn

@@ -56,7 +56,7 @@ namespace autocad_mcp_plugin.AutoCAD
                     $"\n  TCP  port : {SocketService.Instance.Port}" +
                     $"\n  HTTP port : {SocketService.Instance.HttpPort}\n");
             }
-            catch (System.Exception ex)
+            catch (global::System.Exception ex)
             {
                 try
                 {

@@ -4,8 +4,11 @@
     <!-- Product version — override via: dotnet build /p:ProductVersion=1.2.3 -->
     <ProductVersion Condition="'$(ProductVersion)' == ''">1.0.0</ProductVersion>
 
+    <!-- AutoCAD target version — override via: dotnet build /p:AutoCADVersion=2025 -->
+    <AutoCADVersion Condition="'$(AutoCADVersion)' == ''">2025</AutoCADVersion>
+
     <!-- Output MSI name -->
-    <OutputName>DeepBimMCP-AutoCAD-v$(ProductVersion)</OutputName>
+    <OutputName>DeepBimMCP-AutoCAD$(AutoCADVersion)-v$(ProductVersion)</OutputName>
 
     <!-- Source directories passed as WiX preprocessor variables.        -->
     <!-- Paths are relative to THIS .wixproj file location.              -->
@@ -13,7 +16,7 @@
     <_ServerBuildDir>$(MSBuildProjectDirectory)\..\..\..\..\autocad-mcp-server\build</_ServerBuildDir>
     <_ServerNodeModulesDir>$(MSBuildProjectDirectory)\..\..\..\..\autocad-mcp-server\node_modules</_ServerNodeModulesDir>
     <_ServerSrcDir>$(MSBuildProjectDirectory)\..\..\..\..\autocad-mcp-server</_ServerSrcDir>
-    <DefineConstants>ProductVersion=$(ProductVersion);PluginBinDir=$(_PluginBinDir);ServerBuildDir=$(_ServerBuildDir);ServerNodeModulesDir=$(_ServerNodeModulesDir);ServerSrcDir=$(_ServerSrcDir)</DefineConstants>
+    <DefineConstants>ProductVersion=$(ProductVersion);AutoCADVersion=$(AutoCADVersion);PluginBinDir=$(_PluginBinDir);ServerBuildDir=$(_ServerBuildDir);ServerNodeModulesDir=$(_ServerNodeModulesDir);ServerSrcDir=$(_ServerSrcDir)</DefineConstants>
   </PropertyGroup>
 
   <!-- WiX extension for the standard installer UI dialog set -->

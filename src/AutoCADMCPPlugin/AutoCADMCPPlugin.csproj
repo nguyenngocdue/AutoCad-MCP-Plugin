@@ -9,6 +9,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <!-- AutoCAD 2024 install path. Change if installed elsewhere. -->
@@ -49,5 +50,16 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <!-- System.CodeDom required for CodeDomProvider/CompilerParameters on SDK-style net48 -->
+    <PackageReference Include="System.CodeDom" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Embedded logo / icon resources -->
+    <Resource Include="Resources\icon.png"/>
+    <Resource Include="Resources\deepbim-logo.png"/>
+    <Resource Include="Resources\deepbim-logo-56.png"/>
+    <Resource Include="Resources\deepbim-logo-512.png"/>
+    <Resource Include="Resources\Styles\Styles.xaml"/>
   </ItemGroup>
 </Project>

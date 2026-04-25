@@ -1,0 +1,188 @@
+<Page x:Class="autocad_mcp_plugin.UI.CommandSetSettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:autocad_mcp_plugin.UI"
+      mc:Ignorable="d"
+      d:DesignHeight="584" d:DesignWidth="1010"
+      Background="#F8F9FA">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/AutoCADMCPPlugin;component/Resources/Styles/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="CommandSetItemStyle" TargetType="ListBoxItem">
+                <Setter Property="Padding" Value="12,10"/>
+                <Setter Property="Margin" Value="6,2"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                    BorderBrush="#59DCCB" BorderThickness="0" CornerRadius="6"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="#E6FCFA"/>
+                                    <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="#F0FDFB"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#59DCCB" CornerRadius="8" Padding="16,12" Margin="0,0,0,16">
+            <StackPanel>
+                <TextBlock Text="Command Settings" FontSize="20" FontWeight="SemiBold" Foreground="White"/>
+                <TextBlock Text="Enable or disable MCP commands available in AutoCAD."
+                           Foreground="#E6FCFA" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap" Opacity="0.95"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="260"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: Command sets list -->
+            <Border Grid.Column="0" Background="White" BorderBrush="#D6F5F2" BorderThickness="1" CornerRadius="8">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" Opacity="0.1" BlurRadius="6" Direction="315" ShadowDepth="1"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Background="#59DCCB" CornerRadius="7,7,0,0" Padding="12,10">
+                        <TextBlock Text="Command Sets" Foreground="White" FontWeight="SemiBold" FontSize="14"/>
+                    </Border>
+                    <ListBox Grid.Row="1" x:Name="CommandSetListBox"
+                             SelectionChanged="CommandSetListBox_SelectionChanged"
+                             BorderThickness="0" Background="Transparent"
+                             ItemContainerStyle="{StaticResource CommandSetItemStyle}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13" Foreground="#212121"/>
+                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="0,3,0,0"
+                                               Foreground="#666666" FontSize="12"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <!-- Right: Commands list -->
+            <Border Grid.Column="2" Background="White" BorderBrush="#D6F5F2" BorderThickness="1" CornerRadius="8">
+                <Border.Effect>
+                    <DropShadowEffect Color="Black" Opacity="0.1" BlurRadius="6" Direction="315" ShadowDepth="1"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Background="#59DCCB" CornerRadius="7,7,0,0" Padding="12,10">
+                        <Grid>
+                            <TextBlock x:Name="FeaturesHeaderTextBlock" Text="Commands"
+                                       Foreground="White" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="EnabledCountTextBlock" Text=""
+                                       Foreground="#E6FCFA" FontSize="12"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center" Opacity="0.95"/>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Row="1" BorderBrush="#E0E0E0" BorderThickness="0,0,0,1" Padding="10,8">
+                        <TextBox x:Name="SearchBox" Height="32" Padding="8,4"
+                                 BorderBrush="#E0E0E0" BorderThickness="1"
+                                 Tag="Search commands..." Background="White" Foreground="#212121"
+                                 TextChanged="SearchBox_TextChanged"/>
+                    </Border>
+                    <Grid Grid.Row="2">
+                        <ListView x:Name="FeaturesListView" BorderThickness="0" Background="Transparent"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  AlternationCount="2">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Padding" Value="8,6"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                            <Setter Property="Background" Value="#F8FDFC"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#E6FCFA"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="On" Width="44">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding Enabled, Mode=TwoWay}"
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Command" Width="200" DisplayMemberBinding="{Binding CommandName}"/>
+                                    <GridViewColumn x:Name="DescriptionColumn" Header="Description" Width="400"
+                                                    DisplayMemberBinding="{Binding Description}"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <TextBlock x:Name="NoSelectionTextBlock"
+                                   Text="Select a command set on the left to view and toggle its commands."
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   TextWrapping="Wrap" Foreground="#9A9A9A" FontSize="13"
+                                   TextAlignment="Center" Margin="24" Visibility="Collapsed"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Bottom buttons -->
+        <Border Grid.Row="2" Background="White" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0" Padding="0,12,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Open folder" Height="36" MinWidth="90" Margin="4,0" Padding="16,6"
+                        Background="#F4F4F5" BorderBrush="#D4D4D4" BorderThickness="1" Foreground="#71717A"
+                        FontWeight="SemiBold" Cursor="Hand" Click="OpenFolderButton_Click"/>
+                <Button Content="Refresh" Height="36" MinWidth="80" Margin="4,0" Padding="16,6"
+                        Background="#F4F4F5" BorderBrush="#D4D4D4" BorderThickness="1" Foreground="#71717A"
+                        FontWeight="SemiBold" Cursor="Hand" Click="RefreshButton_Click"/>
+                <Button Content="Select all" Height="36" MinWidth="90" Margin="4,0" Padding="16,6"
+                        Background="#F4F4F5" BorderBrush="#D4D4D4" BorderThickness="1" Foreground="#71717A"
+                        FontWeight="SemiBold" Cursor="Hand" Click="SelectAllButton_Click"/>
+                <Button Content="Deselect all" Height="36" MinWidth="95" Margin="4,0" Padding="16,6"
+                        Background="#F4F4F5" BorderBrush="#D4D4D4" BorderThickness="1" Foreground="#71717A"
+                        FontWeight="SemiBold" Cursor="Hand" Click="UnselectAllButton_Click"/>
+                <Button Content="Save" Height="36" MinWidth="100" Margin="4,0" Padding="16,6"
+                        Background="#59DCCB" BorderBrush="#2FB3A5" BorderThickness="1" Foreground="White"
+                        FontWeight="SemiBold" Cursor="Hand" Click="SaveButton_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>

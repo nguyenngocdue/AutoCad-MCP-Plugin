@@ -20,13 +20,14 @@ namespace autocad_mcp_plugin.Commands
 
             var info = new
             {
-                fileName = Path.GetFileName(doc.Name),
-                fullPath = doc.Name,
-                units    = db.Insunits.ToString(),
-                limMin   = new { x = db.Limmin.X, y = db.Limmin.Y },
-                limMax   = new { x = db.Limmax.X, y = db.Limmax.Y },
-                extMin   = new { x = db.Extmin.X, y = db.Extmin.Y, z = db.Extmin.Z },
-                extMax   = new { x = db.Extmax.X, y = db.Extmax.Y, z = db.Extmax.Z }
+                fileName  = Path.GetFileName(doc.Name),
+                fullPath  = doc.Name,
+                isReadOnly = doc.IsReadOnly,
+                units     = db.Insunits.ToString(),
+                limMin    = new { x = db.Limmin.X, y = db.Limmin.Y },
+                limMax    = new { x = db.Limmax.X, y = db.Limmax.Y },
+                extMin    = new { x = db.Extmin.X, y = db.Extmin.Y, z = db.Extmin.Z },
+                extMax    = new { x = db.Extmax.X, y = db.Extmax.Y, z = db.Extmax.Z }
             };
 
             return new AIResult<object>

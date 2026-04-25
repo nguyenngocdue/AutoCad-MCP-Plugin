@@ -75,7 +75,7 @@ namespace autocad_mcp_plugin.Configuration
                     string assemblyPath = cmd["assemblyPath"]?.ToString();
                     if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(assemblyPath)) continue;
 
-                    bool enabled = cmd["enabled"]?.ToObject<bool>() ?? true;
+                    bool enabled = cmd["enabled"] != null && (bool)cmd["enabled"];
                     Config.Commands.Add(new CommandConfig
                     {
                         CommandName = name,

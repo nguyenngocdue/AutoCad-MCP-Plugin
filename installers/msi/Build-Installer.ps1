@@ -15,6 +15,9 @@
 .PARAMETER ProductVersion
     Version string embedded in the MSI and output filename. Default: 1.0.0
 
+.PARAMETER AutoCADVersion
+    AutoCAD release year embedded in the MSI name and package title. Default: 2025
+
 .PARAMETER SkipBuild
     Skip steps 1-2 (use existing build output).
 
@@ -26,14 +29,15 @@
 
 .EXAMPLE
     .\Build-Installer.ps1
-    .\Build-Installer.ps1 -ProductVersion 1.2.0
-    .\Build-Installer.ps1 -ProductVersion 1.2.0 -SkipBuild
+    .\Build-Installer.ps1 -ProductVersion 1.2.0 -AutoCADVersion 2025
+    .\Build-Installer.ps1 -ProductVersion 1.2.0 -AutoCADVersion 2026 -SkipBuild
 #>
 param(
-    [string]$ProductVersion = "1.0.0",
+    [string]$ProductVersion  = "1.0.0",
+    [string]$AutoCADVersion  = "2025",
     [switch]$SkipBuild,
     [switch]$SkipNpmPrune,
-    [string]$Configuration  = "Release"
+    [string]$Configuration   = "Release"
 )
 
 Set-StrictMode -Version Latest
@@ -51,7 +55,7 @@ $PluginBinDir   = "$PluginProjDir\bin\$Configuration\net48"
 # ─────────────────────────────────────────────────────────────────────────────
 Write-Host ""
 Write-Host "╔══════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host "║   DeepBim AutoCAD MCP — Build Installer v$ProductVersion" -ForegroundColor Cyan
+Write-Host "║   DeepBim AutoCAD MCP $AutoCADVersion — Build Installer v$ProductVersion" -ForegroundColor Cyan
 Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
 Write-Host ""
 
@@ -124,11 +128,12 @@ Write-Host "    ✓ ServerNodeModules.wxs updated" -ForegroundColor Green
 # ── Step 6: Build MSI ─────────────────────────────────────────────────────────
 Write-Host "[ 6/6 ] Building MSI..." -ForegroundColor Yellow
 
-$msiName = "DeepBimMCP-AutoCAD-v$ProductVersion.msi"
+$msiName = "DeepBimMCP-AutoCAD${AutoCADVersion}-v$ProductVersion.msi"
 
 dotnet build $WixProj `
     --configuration $Configuration `
     /p:ProductVersion=$ProductVersion `
+    /p:AutoCADVersion=$AutoCADVersion `
     --nologo
 
 if ($LASTEXITCODE -ne 0) { throw "WiX build failed (exit $LASTEXITCODE)" }

@@ -22,6 +22,9 @@
 <?ifndef ProductVersion ?>
   <?define ProductVersion = "1.0.0" ?>
 <?endif?>
+<?ifndef AutoCADVersion ?>
+  <?define AutoCADVersion = "2025" ?>
+<?endif?>
 <?ifndef PluginBinDir ?>
   <?define PluginBinDir = "..\..\src\AutoCADMCPPlugin\bin\Release\net48" ?>
 <?endif?>
@@ -38,7 +41,7 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
-  <Package Name="DeepBim AutoCAD MCP $(var.ProductVersion)"
+  <Package Name="DeepBim AutoCAD MCP $(var.AutoCADVersion) v$(var.ProductVersion)"
            Version="$(var.ProductVersion)"
            Manufacturer="DeepBim"
            UpgradeCode="{E7A5F29B-4C83-4D1E-93B7-6F0A8D2C5E14}"
@@ -152,6 +155,19 @@
     <!-- ================================================================ -->
 
     <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+
+    <!-- ================================================================ -->
+    <!-- Branding                                                          -->
+    <!-- ================================================================ -->
+
+    <!-- Banner: shown at top of every dialog (493 × 58 px) -->
+    <WixVariable Id="WixUIBannerBmp"  Value="branding\WixUIBanner.png" />
+    <!-- Dialog background: shown on Welcome / Finish dialogs (493 × 312 px) -->
+    <WixVariable Id="WixUIDialogBmp" Value="branding\WixUIDialog.png" />
+
+    <!-- Add/Remove Programs icon -->
+    <Icon Id="ProductIcon" SourceFile="..\..\src\AutoCADMCPPlugin\Resources\deepbim-logo-512.png" />
+    <Property Id="ARPPRODUCTICON" Value="ProductIcon" />
 
   </Package>
 </Wix>

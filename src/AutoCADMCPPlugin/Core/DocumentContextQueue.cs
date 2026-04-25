@@ -59,7 +59,7 @@ namespace autocad_mcp_plugin.Core
         {
             var item = new WorkItem(action);
             _queue.Enqueue(item);
-            bool completed = item.CompletedEvent.Wait(timeoutMs);
+            bool completed = item.CompletedEvent.Wait(timeoutMs); // ManualResetEventSlim.Wait
             if (!completed)
                 throw new TimeoutException("AutoCAD document context action timed out.");
             if (item.Exception != null)
