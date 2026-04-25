@@ -86,6 +86,20 @@ namespace autocad_mcp_plugin.UI
                 // command.json lives next to the DLL (or in Commands sub-folder)
                 string pluginDir = PathManager.GetPluginDirectoryPath();
                 string commandsDir = PathManager.GetCommandsDirectoryPath();
+                string registryPath = PathManager.GetCommandRegistryFilePath();
+                var savedState = new Dictionary<string, bool>();
+                if (File.Exists(registryPath))
+                {
+                    try
+                    {
+                        var reg = JsonConvert.DeserializeObject<CommandRegistryModel>(
+                            File.ReadAllText(registryPath));
+                        if (reg?.Commands != null)
+                            foreach (var c in reg.Commands)
+                                savedState[c.CommandName] = c.Enabled;
+                    }
+                    catch { }
+                }
 
                 // Look for sub-directories with command.json (same pattern as Revit plugin)
                 var candidateDirs = new[] { commandsDir, pluginDir };
@@ -94,23 +108,6 @@ namespace autocad_mcp_plugin.UI
                 foreach (string baseDir in candidateDirs)
                 {
                     if (!Directory.Exists(baseDir)) continue;
-
-                    string registryPath = Path.Combine(baseDir, "commandRegistry.json");
-
-                    // Load existing enabled state
-                    var savedState = new Dictionary<string, bool>();
-                    if (File.Exists(registryPath))
-                    {
-                        try
-                        {
-                            var reg = JsonConvert.DeserializeObject<CommandRegistryModel>(
-                                File.ReadAllText(registryPath));
-                            if (reg?.Commands != null)
-                                foreach (var c in reg.Commands)
-                                    savedState[c.CommandName] = c.Enabled;
-                        }
-                        catch { }
-                    }
 
                     // Each sub-directory = one command set
                     foreach (string dir in Directory.GetDirectories(baseDir))

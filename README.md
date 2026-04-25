@@ -123,6 +123,7 @@ Alternatively, add to `acad.lsp` or your startup profile for auto-load:
 | `MCPSTART` | Start or verify the MCP server |
 | `MCPSTOP` | Stop the MCP server |
 | `MCPSTATUS` | Show current server status and port |
+| `MCPRIBBON` | Create or refresh the DeepBim MCP ribbon tab |
 
 ---
 

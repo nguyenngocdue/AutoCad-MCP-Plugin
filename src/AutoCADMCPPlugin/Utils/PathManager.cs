@@ -7,6 +7,7 @@ namespace autocad_mcp_plugin.Utils
     public static class PathManager
     {
         private static string _pluginDirectory;
+        private static string _appDataDirectory;
 
         private const string AppDataFolder = "DeepBim-MCP-ACAD";
 
@@ -42,9 +43,24 @@ namespace autocad_mcp_plugin.Utils
             return _pluginDirectory;
         }
 
+        public static string GetAppDataDirectoryPath()
+        {
+            if (_appDataDirectory != null)
+                return _appDataDirectory;
+
+            _appDataDirectory = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                AppDataFolder);
+
+            if (!Directory.Exists(_appDataDirectory))
+                Directory.CreateDirectory(_appDataDirectory);
+
+            return _appDataDirectory;
+        }
+
         public static string GetLogsDirectoryPath()
         {
-            string dir = Path.Combine(GetPluginDirectoryPath(), "logs");
+            string dir = Path.Combine(GetAppDataDirectoryPath(), "logs");
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
             return dir;
@@ -57,15 +73,13 @@ namespace autocad_mcp_plugin.Utils
 
         public static string GetCommandRegistryFilePath()
         {
-            return Path.Combine(GetPluginDirectoryPath(), "Commands", "commandRegistry.json");
+            return Path.Combine(GetAppDataDirectoryPath(), "Commands", "commandRegistry.json");
         }
 
         /// <summary>Path to the port file so MCP server can discover the TCP port.</summary>
         public static string GetPortFilePath()
         {
-            return Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                AppDataFolder, "mcp-port.txt");
+            return Path.Combine(GetAppDataDirectoryPath(), "mcp-port.txt");
         }
     }
 }
