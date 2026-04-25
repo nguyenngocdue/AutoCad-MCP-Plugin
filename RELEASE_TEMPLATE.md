@@ -1,46 +1,26 @@
-# DeepBim AutoCAD MCP Plugin v[VERSION]
+# 🚀 DeepBim AutoCAD MCP Plugin
 
-Release date: [YYYY-MM-DD]
+**Release date:** 2026-04-25  
+**License:** MIT  
+**Platform:** Windows x64  
+**Supported AutoCAD versions:** AutoCAD 2018–2027  
 
-DeepBim AutoCAD MCP Plugin connects AutoCAD with MCP-compatible AI tools, allowing assistants to inspect drawings, read layers/entities, and execute supported AutoCAD automation commands through either a local MCP server or the hosted DeepBim MCP endpoint for ChatGPT.
+DeepBim AutoCAD MCP Plugin connects AutoCAD with MCP-compatible AI tools, allowing AI assistants to inspect drawings, read layers and entities, and execute supported AutoCAD automation commands.
 
-## Highlights
+The plugin supports both local MCP workflows and hosted MCP integrations with MCP-compatible AI clients such as ChatGPT, Claude, Cursor, Copilot, and other MCP-compatible tools.
 
-- AutoCAD plugin packaged as a Windows MSI installer.
-- MCP server files included in the installer.
-- Supports AutoCAD 2018-2027 on Windows x64.
-- Installs the AutoCAD bundle for automatic loading on startup.
-- Stores the MCP server path in Windows Registry for easier client configuration.
-- Supports both local MCP configuration and hosted ChatGPT app configuration.
-- Hosted online MCP endpoint for ChatGPT: `https://autocad-mcp.deepbim.app/mcp`
+For users who want a simpler setup and lower operating cost, DeepBim provides a hosted MCP endpoint for ChatGPT, allowing AutoCAD to connect without manually running a local MCP server.
 
-## Quick Start: Use With ChatGPT
+---
 
-Use this option if you want to connect through ChatGPT Apps using the hosted DeepBim AutoCAD MCP endpoint. This is the easiest setup for community users because you do not need to manually configure or run a local MCP server.
+## 📌 1. Overview
 
-1. Install the MSI for your AutoCAD version.
-2. Restart AutoCAD.
-3. Open ChatGPT.
-4. Go to `Settings`.
-5. Open `Apps`.
-6. Select `Create app`.
-7. Fill in the app information:
+DeepBim AutoCAD MCP Plugin provides two ways to connect AutoCAD with AI assistants:
 
-| Field | Value |
-| --- | --- |
-| Logo | Use the DeepBim logo. |
-| Name | `DeepBim AutoCAD MCP` |
-| Description | `Connect ChatGPT to AutoCAD through DeepBim MCP to inspect drawings and run supported automation commands.` |
-| MCP Server URL | `https://autocad-mcp.deepbim.app/mcp` |
-| Authentication | `No Auth` |
-
-8. Save the app.
-9. Enable the app in ChatGPT.
-10. In AutoCAD, run:
-
-```text
-MCPSTATUS
-```
+| Connection Mode | Recommended For | Description |
+| --- | --- | --- |
+| **ChatGPT Online MCP** | Community users, simple setup, lower operating cost | Connect through the hosted DeepBim MCP endpoint without manually running a local MCP server |
+| **Local MCP Server** | Developers, private workflows, enterprise/internal use | Run the MCP server locally and connect from MCP-compatible desktop clients |
 
 Hosted MCP endpoint:
 
@@ -48,41 +28,157 @@ Hosted MCP endpoint:
 https://autocad-mcp.deepbim.app/mcp
 ```
 
-Authentication is not implemented yet. Select `No Auth` when creating the ChatGPT app.
+---
 
-## Downloads
+## 🧭 2. Architecture Diagram
 
-Choose the MSI that matches your AutoCAD version. Do not download or install `.wixpdb` files; those are developer debug symbols.
+### 💬 ChatGPT Online MCP Mode
 
-| AutoCAD Version | Installer |
-| --- | --- |
-| AutoCAD 2018 | `DeepBimMCP-AutoCAD2018-v[VERSION].msi` |
-| AutoCAD 2019 | `DeepBimMCP-AutoCAD2019-v[VERSION].msi` |
-| AutoCAD 2020 | `DeepBimMCP-AutoCAD2020-v[VERSION].msi` |
-| AutoCAD 2021 | `DeepBimMCP-AutoCAD2021-v[VERSION].msi` |
-| AutoCAD 2022 | `DeepBimMCP-AutoCAD2022-v[VERSION].msi` |
-| AutoCAD 2023 | `DeepBimMCP-AutoCAD2023-v[VERSION].msi` |
-| AutoCAD 2024 | `DeepBimMCP-AutoCAD2024-v[VERSION].msi` |
-| AutoCAD 2025 | `DeepBimMCP-AutoCAD2025-v[VERSION].msi` |
-| AutoCAD 2026 | `DeepBimMCP-AutoCAD2026-v[VERSION].msi` |
-| AutoCAD 2027 | `DeepBimMCP-AutoCAD2027-v[VERSION].msi` |
+```text
+👤 User
+   ↓
+💬 ChatGPT App
+   ↓
+🌐 DeepBim Hosted MCP Endpoint
+   ↓
+🧩 AutoCAD MCP Plugin
+   ↓
+📐 Active DWG Drawing
+```
 
-## System Requirements
+### 🖥️ Local MCP Server Mode
 
-- Windows 10/11 x64.
-- AutoCAD 2018-2027 x64.
-- .NET Framework 4.8.
+```text
+🤖 MCP Client
+   Claude / Cursor / Copilot / Custom Client
+   ↓
+🖥️ Local MCP Server
+   ↓
+🧩 AutoCAD MCP Plugin
+   ↓
+📐 Active DWG Drawing
+```
+
+---
+
+## ✨ 3. Highlights
+
+- Windows MSI installer for AutoCAD.
+- AutoCAD bundle installation for AutoCAD 2018-2024 with automatic loading on startup.
+- AutoCAD 2025-2027 supported through manual `NETLOAD` after installation.
+- MCP server files included in the installer.
+- Support for AutoCAD 2018–2027 on Windows x64.
+- Local MCP server support for desktop and private workflows.
+- Hosted MCP endpoint support for ChatGPT Apps.
+- MCP server path stored in Windows Registry for easier client configuration.
+- Compatible with MCP clients such as ChatGPT, Claude Desktop, Cursor, Copilot, and other MCP-compatible tools.
+
+---
+
+## 🧩 4. Connection Options
+
+| Mode | Best For | Configuration |
+| --- | --- | --- |
+| **ChatGPT Online MCP** | Community users who want a simple setup and lower usage cost | `https://autocad-mcp.deepbim.app/mcp` |
+| **Local MCP Server** | Local desktop workflows, private network use, custom MCP clients | `node "C:\Program Files\DeepBim\AutoCAD-MCP\server\build\index.js"` |
+
+### Recommended Option
+
+For most community users, **ChatGPT Online MCP** is recommended because it does not require manually running or configuring a local MCP server.
+
+For developers and enterprise users, **Local MCP Server** is recommended when drawings or workflows must remain inside a private environment.
+
+---
+
+## ⚙️ 5. System Requirements
+
+- Windows 10 or Windows 11 x64.
+- AutoCAD 2018–2027 x64.
+- .NET Framework 4.8 for AutoCAD 2018-2024.
+- .NET 8 Desktop Runtime for AutoCAD 2025-2026.
+- .NET runtime required by AutoCAD 2027.
 - Node.js LTS installed and available as `node` in PATH.
 - Administrator permission to install the MSI.
 - ChatGPT account with Apps support, if using the hosted online MCP endpoint.
 
-## Installation
+---
+
+## 📦 6. Installation
 
 1. Close AutoCAD.
-2. Download the MSI for your AutoCAD version.
-3. Run the MSI installer.
+2. Download the MSI installer for your AutoCAD version.
+3. Run the MSI installer as administrator.
 4. Restart AutoCAD.
-5. In AutoCAD, run:
+5. Load the plugin using the version-specific instructions below.
+6. In AutoCAD, run:
+
+```text
+MCPSTATUS
+```
+
+If the plugin is installed correctly, AutoCAD will display the MCP server status and port information.
+
+### AutoCAD 2018-2024
+
+AutoCAD 2018-2024 should discover the installed bundle automatically at startup. After restarting AutoCAD, run:
+
+```text
+MCPSTATUS
+```
+
+### AutoCAD 2025-2027
+
+AutoCAD 2025, 2026, and 2027 may not load the bundle automatically after MSI installation. If `MCPSTATUS` is not recognized, load the plugin manually:
+
+1. In AutoCAD, run:
+
+```text
+NETLOAD
+```
+
+2. Browse to:
+
+```text
+C:\Program Files\Autodesk\ApplicationPlugins\DeepBimAutoCADMCP.bundle\Contents\AutoCADMCPPlugin.dll
+```
+
+3. Select `AutoCADMCPPlugin.dll`.
+4. Run:
+
+```text
+MCPSTATUS
+```
+
+---
+
+## 💬 7. Quick Start: ChatGPT Online Mode
+
+Use this option if you want to connect ChatGPT to AutoCAD through the hosted DeepBim MCP endpoint.
+
+This is the easiest setup for community users because you do not need to manually run a local MCP server.
+
+### Steps
+
+1. Install the MSI package for your AutoCAD version.
+2. Restart AutoCAD.
+3. For AutoCAD 2025-2027, run `NETLOAD` and select `C:\Program Files\Autodesk\ApplicationPlugins\DeepBimAutoCADMCP.bundle\Contents\AutoCADMCPPlugin.dll` if `MCPSTATUS` is not recognized.
+4. Open ChatGPT.
+5. Go to `Settings`.
+6. Open `Apps`.
+7. Select `Create app`.
+8. Fill in the app information:
+
+| Field | Value |
+| --- | --- |
+| Logo | Use the DeepBim logo |
+| Name | `DeepBim AutoCAD MCP` |
+| Description | `Connect ChatGPT to AutoCAD through DeepBim MCP to inspect drawings and run supported automation commands.` |
+| MCP Server URL | `https://autocad-mcp.deepbim.app/mcp` |
+| Authentication | `No Auth` |
+
+9. Save the app.
+10. Enable the app in ChatGPT.
+11. In AutoCAD, run:
 
 ```text
 MCPSTATUS
@@ -90,18 +186,15 @@ MCPSTATUS
 
 If the plugin is loaded correctly, AutoCAD will show the MCP server status and port information.
 
-## Connection Options
+> Authentication is not implemented yet. Select `No Auth` when creating the ChatGPT app.
 
-You can connect to DeepBim AutoCAD MCP in either local mode or online ChatGPT mode.
+---
 
-| Mode | Best For | MCP Server URL / Command |
-| --- | --- | --- |
-| Local MCP Server | Local desktop workflows, private network use, custom MCP clients. | `node "C:\Program Files\DeepBim\AutoCAD-MCP\server\build\index.js"` |
-| ChatGPT Online MCP | Community users who want to connect through ChatGPT Apps without manually running a local MCP server. | `https://autocad-mcp.deepbim.app/mcp` |
+## 🖥️ 8. Local MCP Client Configuration
 
-## Local MCP Client Configuration
+After installation, configure your MCP client to run the installed local server.
 
-After installation, configure your MCP client to run the installed server:
+Example configuration:
 
 ```json
 {
@@ -117,53 +210,26 @@ After installation, configure your MCP client to run the installed server:
 }
 ```
 
-The server path is also stored in:
+The MCP server path is also stored in Windows Registry:
 
 ```text
 HKLM\SOFTWARE\DeepBim\AutoCAD-MCP\ServerPath
 ```
 
-## ChatGPT Online Setup
+---
 
-Use this option if you want to connect through ChatGPT Apps using the hosted DeepBim MCP endpoint. The quick-start version is at the top of this release note; the same settings are repeated here for reference.
-
-1. Open ChatGPT.
-2. Go to `Settings`.
-3. Open `Apps`.
-4. Select `Create app`.
-5. Fill in the app information:
-
-| Field | Value |
-| --- | --- |
-| Logo | Use the DeepBim logo. |
-| Name | `DeepBim AutoCAD MCP` |
-| Description | `Connect ChatGPT to AutoCAD through DeepBim MCP to inspect drawings and run supported automation commands.` |
-| MCP Server URL | `https://autocad-mcp.deepbim.app/mcp` |
-| Authentication | `No Auth` |
-
-6. Save the app.
-7. Enable the app in ChatGPT.
-8. Restart AutoCAD if it was already open.
-9. In AutoCAD, run:
-
-```text
-MCPSTATUS
-```
-
-The online endpoint is:
-
-```text
-https://autocad-mcp.deepbim.app/mcp
-```
-
-Authentication is not implemented yet. Select `No Auth` when creating the ChatGPT app.
-
-## Installed Locations
+## 📁 9. Installed Locations
 
 AutoCAD plugin bundle:
 
 ```text
-C:\ProgramData\Autodesk\ApplicationPlugins\DeepBimAutoCADMCP.bundle
+C:\Program Files\Autodesk\ApplicationPlugins\DeepBimAutoCADMCP.bundle
+```
+
+Plugin DLL:
+
+```text
+C:\Program Files\Autodesk\ApplicationPlugins\DeepBimAutoCADMCP.bundle\Contents\AutoCADMCPPlugin.dll
 ```
 
 MCP server:
@@ -172,102 +238,85 @@ MCP server:
 C:\Program Files\DeepBim\AutoCAD-MCP\server
 ```
 
-## Available AutoCAD Commands
+---
+
+## 🛠️ 10. Available AutoCAD Commands
 
 | Command | Description |
 | --- | --- |
-| `MCPSTART` | Start or verify the MCP server. |
-| `MCPSTOP` | Stop the MCP server. |
-| `MCPSTATUS` | Show current MCP server status and port. |
+| `MCPSTART` | Start or verify the MCP server |
+| `MCPSTOP` | Stop the MCP server |
+| `MCPSTATUS` | Show the current MCP server status and port information |
+| `MCPSETTINGS` | Open the command settings window |
 
-## Security Notes
+---
+
+## 🔐 11. Security Notes
 
 - The plugin runs locally on the user's machine.
 - MCP access should only be enabled for trusted clients.
-- The hosted ChatGPT MCP endpoint is currently configured with `No Auth`.
-- Do not use confidential production drawings with online workflows unless that matches your organization's security policy.
+- The hosted ChatGPT MCP endpoint currently uses `No Auth`.
+- Do not use confidential production drawings with online workflows unless this matches your organization's security policy.
 - Review AI-generated commands before applying them to production drawings.
 - Keep backups of important DWG files before automation-heavy workflows.
+- For enterprise environments, review firewall, endpoint security, and MCP client policies before deployment.
 
-## Checksums
+---
 
-Optional but recommended for public releases. Generate SHA256 checksums after building the MSI files.
+## ⚠️ 12. Known Limitations
 
-```powershell
-Get-FileHash .\DeepBimMCP-AutoCAD2025-v[VERSION].msi -Algorithm SHA256
-```
-
-| File | SHA256 |
-| --- | --- |
-| `DeepBimMCP-AutoCAD2018-v[VERSION].msi` | `[SHA256]` |
-| `DeepBimMCP-AutoCAD2019-v[VERSION].msi` | `[SHA256]` |
-| `DeepBimMCP-AutoCAD2020-v[VERSION].msi` | `[SHA256]` |
-| `DeepBimMCP-AutoCAD2021-v[VERSION].msi` | `[SHA256]` |
-| `DeepBimMCP-AutoCAD2022-v[VERSION].msi` | `[SHA256]` |
-| `DeepBimMCP-AutoCAD2023-v[VERSION].msi` | `[SHA256]` |
-| `DeepBimMCP-AutoCAD2024-v[VERSION].msi` | `[SHA256]` |
-| `DeepBimMCP-AutoCAD2025-v[VERSION].msi` | `[SHA256]` |
-| `DeepBimMCP-AutoCAD2026-v[VERSION].msi` | `[SHA256]` |
-| `DeepBimMCP-AutoCAD2027-v[VERSION].msi` | `[SHA256]` |
-
-## What's New
-
-- [Feature or improvement 1]
-- [Feature or improvement 2]
-- [Bug fix 1]
-
-## Known Limitations
-
-- Requires AutoCAD to be installed locally.
-- Requires Node.js to be available as `node`.
+- AutoCAD must be installed locally.
+- Node.js must be installed and available as `node` in PATH.
 - ChatGPT online mode currently uses `No Auth`.
 - Some automation commands may depend on the active drawing state.
 - The plugin should be tested with your AutoCAD version before production use.
+- Endpoint security tools may block unsigned or newly built plugin files until they are reviewed or allowlisted.
+- AutoCAD 2025-2027 may require manual `NETLOAD` to load `AutoCADMCPPlugin.dll` after installation.
 
-## Upgrade Notes
+---
+
+## 🔄 13. Upgrade Notes
 
 1. Close AutoCAD.
-2. Install the new MSI for your AutoCAD version.
+2. Install the new MSI package for your AutoCAD version.
 3. Restart AutoCAD.
-4. Run `MCPSTATUS` to verify the plugin status.
-
-## Uninstall
-
-Use Windows Settings:
+4. For AutoCAD 2025-2027, run `NETLOAD` and select:
 
 ```text
-Settings -> Apps -> Installed apps -> DeepBim AutoCAD MCP
+C:\Program Files\Autodesk\ApplicationPlugins\DeepBimAutoCADMCP.bundle\Contents\AutoCADMCPPlugin.dll
 ```
 
-Or run:
+5. Run the following command in AutoCAD:
 
-```powershell
-msiexec /x "DeepBimMCP-AutoCAD[VERSION_YEAR]-v[VERSION].msi"
+```text
+MCPSTATUS
 ```
 
-## Support
+6. Verify that the plugin status and MCP server information are displayed correctly.
 
-Please report issues with:
+---
+
+## 🧾 14. Support
+
+When reporting an issue, please include the following information:
 
 - AutoCAD version.
 - Windows version.
 - Plugin version.
 - MCP client name and version.
-- Steps to reproduce the problem.
-- Relevant logs from:
+- Installation method.
+- Connection mode: local MCP server or hosted ChatGPT MCP.
+- Steps to reproduce the issue.
+- Relevant logs or screenshots.
+- Any endpoint security alerts, such as SentinelOne, Windows Defender, or antivirus warnings.
 
-```text
-%APPDATA%\DeepBim-MCP-ACAD\logs
-```
+---
 
-## Release Checklist
+## 👤 15. Project Information
 
-- [ ] Build MSI files for all supported AutoCAD versions.
-- [ ] Test install and uninstall on a clean machine.
-- [ ] Confirm AutoCAD loads the plugin after restart.
-- [ ] Confirm `MCPSTATUS` works.
-- [ ] Confirm MCP client can launch the server.
-- [ ] Confirm ChatGPT app setup works with `https://autocad-mcp.deepbim.app/mcp`.
-- [ ] Generate SHA256 checksums.
-- [ ] Upload only `.msi` files and release notes.
-- [ ] Do not upload `.wixpdb` files for public users.
+| Item | Value |
+| --- | --- |
+| Project | DeepBim AutoCAD MCP Plugin |
+| Author | Nguyễn Ngọc Duệ |
+| GitHub | `https://github.com/nguyenngocdue` |
+| License | MIT |

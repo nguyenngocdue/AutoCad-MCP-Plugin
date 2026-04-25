@@ -56,7 +56,7 @@ This project requires AutoCAD .NET managed DLLs. They are **not on NuGet** — y
 
 **Configure the path** in the `.csproj`:
 ```xml
-<AutoCADInstallDir>C:\Program Files\Autodesk\AutoCAD 2025</AutoCADInstallDir>
+<AutoCADInstallDir>C:\Program Files\Autodesk\AutoCAD 2024</AutoCADInstallDir>
 ```
 Or set the `AutoCADInstallDir` environment variable before building.
 
@@ -68,7 +68,7 @@ Or set the `AutoCADInstallDir` environment variable before building.
 cd autocad-addin/src/AutoCADMCPPlugin
 
 # Set AutoCAD install dir if not default
-$env:AutoCADInstallDir = "C:\Program Files\Autodesk\AutoCAD 2025"
+$env:AutoCADInstallDir = "C:\Program Files\Autodesk\AutoCAD 2024"
 
 dotnet build AutoCADMCPPlugin.csproj
 ```
@@ -77,12 +77,13 @@ The output DLL will be at `bin\Debug\net48\AutoCADMCPPlugin.dll`.
 
 > **Note:** The project targets `net48` (required by AutoCAD .NET API which is .NET Framework).  
 > Build requires .NET Framework 4.8 SDK (`dotnet build` works if you have VS Build Tools or Visual Studio).
+> The installer script builds AutoCAD 2025/2026 as `net8.0-windows` and AutoCAD 2027 as `net10.0-windows`.
 
 ---
 
 ## Load into AutoCAD
 
-1. Open AutoCAD 2025 (or your version)
+1. Open AutoCAD 2024 (or your compatible version)
 2. Type `NETLOAD` in the command line
 3. Browse to `AutoCADMCPPlugin.dll` (the plugin initializes automatically and starts the MCP server)
 4. Run `MCPSTATUS` to verify the plugin status

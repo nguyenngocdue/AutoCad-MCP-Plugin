@@ -4,17 +4,19 @@
   
   This file tells AutoCAD to automatically load DeepBimAutoCADMCP on startup.
   It is installed to:
-    C:\ProgramData\Autodesk\ApplicationPlugins\DeepBimAutoCADMCP.bundle\PackageContents.xml
+    C:\Program Files\Autodesk\ApplicationPlugins\DeepBimAutoCADMCP.bundle\PackageContents.xml
   
   AutoCAD discovers bundles in:
-    - C:\ProgramData\Autodesk\ApplicationPlugins\   (all users, this installer)
+    - C:\Program Files\Autodesk\ApplicationPlugins\  (all users, this installer)
     - %APPDATA%\Autodesk\ApplicationPlugins\         (current user)
   
-  SeriesMin="R22.0" = AutoCAD 2018
-  SeriesMax is omitted to support AutoCAD 2018 and later
+  SeriesMin="R22.0" = AutoCAD 2018.
+  SeriesMax is omitted so generated 2025/2026/2027 MSI files are discoverable.
+  Note: this only controls AutoCAD autoloader discovery. The plugin DLL runtime
+  must still match the target AutoCAD .NET runtime/SDK.
 -->
 <ApplicationPackage SchemaVersion="1.0"
-                    Version="1.0.0"
+                    AppVersion="1.0.0"
                     ProductCode="{B3C4D5E6-F7A8-9012-BCDE-F01234567891}"
                     Name="DeepBim AutoCAD MCP Plugin"
                     Description="AutoCAD MCP Plugin — AI Integration via Model Context Protocol"
@@ -22,14 +24,25 @@
 
   <CompanyDetails Name="DeepBim" URL="" Email="" />
 
-  <RuntimeRequirements OS="Win64" Platform="AutoCAD" SeriesMin="R22.0" />
-
   <Components Description="DeepBim AutoCAD MCP Plugin">
-    <RuntimeRequirements OS="Win64" Platform="AutoCAD" SeriesMin="R22.0" />
     <ComponentEntry AppName="DeepBimAutoCADMCP"
                     Version="1.0.0"
+                    AppDescription="DeepBim AutoCAD MCP Plugin"
+                    AppType=".Net"
                     ModuleName="./Contents/AutoCADMCPPlugin.dll"
-                    LoadReasons="Startup" />
+                    LoadOnAutoCADStartup="True"
+                    LoadOnCommandInvocation="True">
+      <RuntimeRequirements OS="Win64"
+                           Platform="AutoCAD*"
+                           SeriesMin="R22.0"
+                           SupportPath="./Contents" />
+      <Commands GroupName="DeepBimMCP">
+        <Command Global="MCPSTART" Local="MCPSTART" />
+        <Command Global="MCPSTOP" Local="MCPSTOP" />
+        <Command Global="MCPSTATUS" Local="MCPSTATUS" />
+        <Command Global="MCPSETTINGS" Local="MCPSETTINGS" />
+      </Commands>
+    </ComponentEntry>
   </Components>
 
 </ApplicationPackage>

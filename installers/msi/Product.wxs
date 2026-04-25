@@ -3,7 +3,7 @@
   DeepBim AutoCAD MCP Plugin — WiX v5 Installer
   
   What this installs:
-    1. AutoCAD plugin DLL + deps  →  C:\ProgramData\Autodesk\ApplicationPlugins\DeepBimAutoCADMCP.bundle\
+    1. AutoCAD plugin DLL + deps  →  C:\Program Files\Autodesk\ApplicationPlugins\DeepBimAutoCADMCP.bundle\
        - PackageContents.xml  (tells AutoCAD to load the DLL on startup)
        - Contents\AutoCADMCPPlugin.dll
        - Contents\Newtonsoft.Json.dll
@@ -23,7 +23,7 @@
   <?define ProductVersion = "1.0.0" ?>
 <?endif?>
 <?ifndef AutoCADVersion ?>
-  <?define AutoCADVersion = "2025" ?>
+  <?define AutoCADVersion = "2024" ?>
 <?endif?>
 <?ifndef PluginBinDir ?>
   <?define PluginBinDir = "..\..\src\AutoCADMCPPlugin\bin\Release\net48" ?>
@@ -50,7 +50,8 @@
 
     <SummaryInformation Description="DeepBim AutoCAD MCP Plugin — AI Integration for AutoCAD" />
 
-    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MajorUpgrade AllowSameVersionUpgrades="yes"
+                  DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
 
     <!-- ================================================================ -->
@@ -58,6 +59,7 @@
     <!-- ================================================================ -->
 
     <!-- %ProgramFiles%\DeepBim\AutoCAD-MCP\ — MCP server -->
+    <!-- %ProgramFiles%\Autodesk\ApplicationPlugins\ — AutoCAD bundle (auto-load on startup) -->
     <StandardDirectory Id="ProgramFiles64Folder">
       <Directory Id="DIR_DeepBim" Name="DeepBim">
         <Directory Id="INSTALLFOLDER" Name="AutoCAD-MCP">
@@ -70,11 +72,7 @@
           </Directory>
         </Directory>
       </Directory>
-    </StandardDirectory>
-
-    <!-- C:\ProgramData\Autodesk\ApplicationPlugins\ — AutoCAD bundle (auto-load on startup) -->
-    <StandardDirectory Id="CommonAppDataFolder">
-      <Directory Id="DIR_Autodesk" Name="Autodesk">
+      <Directory Id="DIR_AutodeskPluginsRoot" Name="Autodesk">
         <Directory Id="DIR_AppPlugins" Name="ApplicationPlugins">
           <Directory Id="DIR_Bundle" Name="DeepBimAutoCADMCP.bundle">
             <Directory Id="DIR_BundleContents" Name="Contents" />
@@ -93,6 +91,9 @@
       </Component>
       <Component Id="Comp_Plugin_NewtonsoftJson" Guid="*">
         <File Source="$(var.PluginBinDir)\Newtonsoft.Json.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="Comp_Plugin_SystemCodeDom" Guid="*">
+        <File Source="$(var.PluginBinDir)\System.CodeDom.dll" KeyPath="yes" />
       </Component>
       <!-- command.json: defines available MCP commands; read by the Settings UI -->
       <Component Id="Comp_CommandJson" Guid="*">

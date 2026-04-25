@@ -17,11 +17,11 @@
 .PARAMETER AutoCADVersion
     AutoCAD release year(s) embedded in the MSI name and package title.
     Supports a single year, comma-separated years, or a range from 2018 to 2027.
-    Default: 2025
+    Default: 2024
 
 .PARAMETER AutoCADInstallDir
     Optional AutoCAD install folder used to build the C# plugin references.
-    Example: C:\Program Files\Autodesk\AutoCAD 2018
+    Example: C:\Program Files\Autodesk\AutoCAD 2026
 
 .PARAMETER SkipBuild
     Skip steps 1-2 (use existing build output).
@@ -34,13 +34,13 @@
 
 .EXAMPLE
     .\Build-Installer.ps1
-    .\Build-Installer.ps1 -ProductVersion 1.2.0 -AutoCADVersion 2025
-    .\Build-Installer.ps1 -ProductVersion 1.2.0 -AutoCADVersion 2018,2024,2027
+    .\Build-Installer.ps1 -ProductVersion 1.2.0 -AutoCADVersion 2024
+    .\Build-Installer.ps1 -ProductVersion 1.2.0 -AutoCADVersion 2025,2026,2027
     .\Build-Installer.ps1 -ProductVersion 1.2.0 -AutoCADVersion 2018-2027 -SkipBuild
 #>
 param(
     [string]$ProductVersion  = "1.0.0",
-    [string[]]$AutoCADVersion = @("2025"),
+    [string[]]$AutoCADVersion = @("2024"),
     [string]$AutoCADInstallDir = "",
     [switch]$SkipBuild,
     [switch]$SkipNpmPrune,
@@ -88,7 +88,7 @@ function Expand-AutoCADVersions {
                 Add-Version ([int]$value)
             }
             else {
-                throw "Invalid AutoCADVersion value '$value'. Use 2027, 2018,2024,2027, or 2018-2027."
+                throw "Invalid AutoCADVersion value '$value'. Use 2027, 2025,2026,2027, or 2018-2027."
             }
         }
     }
@@ -102,7 +102,6 @@ function Expand-AutoCADVersions {
 
 $AutoCADVersions = Expand-AutoCADVersions $AutoCADVersion
 $AutoCADVersionsText = $AutoCADVersions -join ", "
-
 $InstallerDir   = $PSScriptRoot
 $RepoRoot       = Resolve-Path "$InstallerDir\..\.."          # autocad-addin\
 $PluginProjDir  = Resolve-Path "$RepoRoot\src\AutoCADMCPPlugin"
@@ -110,7 +109,62 @@ $ServerDir      = Resolve-Path "$InstallerDir\..\..\..\..\autocad-mcp-server"
 $OutputDir      = [System.IO.Path]::Combine($InstallerDir, "output")
 $WixProj        = "$InstallerDir\DeepBimMCP.AutoCAD.Installer.wixproj"
 
-$PluginBinDir   = "$PluginProjDir\bin\$Configuration\net48"
+function Get-PluginTargetFramework {
+    param([int]$Version)
+
+    if ($Version -le 2024) { return "net48" }
+    if ($Version -le 2026) { return "net8.0-windows" }
+    return "net10.0-windows"
+}
+
+function Get-EffectiveAutoCADInstallDir {
+    param([int]$Version)
+
+    if (-not [string]::IsNullOrWhiteSpace($AutoCADInstallDir)) {
+        return $AutoCADInstallDir
+    }
+
+    return "C:\Program Files\Autodesk\AutoCAD $Version"
+}
+
+function Build-PluginForVersion {
+    param([int]$Version)
+
+    $targetFramework = Get-PluginTargetFramework $Version
+    $effectiveAutoCADInstallDir = Get-EffectiveAutoCADInstallDir $Version
+    $pluginBinDir = "$PluginProjDir\bin\$Configuration\$targetFramework"
+
+    if (-not $SkipBuild) {
+        Write-Host "    Building plugin for AutoCAD $Version ($targetFramework)..." -ForegroundColor Yellow
+        Push-Location $PluginProjDir
+        try {
+            $pluginBuildArgs = @(
+                "build",
+                "AutoCADMCPPlugin.csproj",
+                "--configuration", $Configuration,
+                "/p:TargetFramework=$targetFramework",
+                "/p:AutoCADInstallDir=$effectiveAutoCADInstallDir",
+                "--nologo"
+            )
+
+            dotnet @pluginBuildArgs
+            if ($LASTEXITCODE -ne 0) { throw "dotnet build failed for AutoCAD $Version / $targetFramework (exit $LASTEXITCODE)" }
+        }
+        finally { Pop-Location }
+    }
+    else {
+        Write-Host "    Skipping plugin build for AutoCAD $Version ($targetFramework) (-SkipBuild)" -ForegroundColor Gray
+    }
+
+    if (-not (Test-Path "$pluginBinDir\AutoCADMCPPlugin.dll")) {
+        throw "AutoCADMCPPlugin.dll not found for AutoCAD $Version at: $pluginBinDir"
+    }
+
+    return @{
+        TargetFramework = $targetFramework
+        BinDir = $pluginBinDir
+    }
+}
 
 # -----------------------------------------------------------------------------
 Write-Host ""
@@ -119,37 +173,12 @@ Write-Host "  DeepBim AutoCAD MCP $AutoCADVersionsText - Build Installer v$Produ
 Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Step 1: Build C# plugin
-if (-not $SkipBuild) {
-    Write-Host "[ 1/6 ] Building AutoCAD plugin (C#, net48, $Configuration)..." -ForegroundColor Yellow
-    Push-Location $PluginProjDir
-    try {
-        $pluginBuildArgs = @(
-            "build",
-            "AutoCADMCPPlugin.csproj",
-            "--configuration", $Configuration,
-            "--nologo"
-        )
-
-        if (-not [string]::IsNullOrWhiteSpace($AutoCADInstallDir)) {
-            $pluginBuildArgs += "/p:AutoCADInstallDir=$AutoCADInstallDir"
-        }
-
-        dotnet @pluginBuildArgs
-        if ($LASTEXITCODE -ne 0) { throw "dotnet build failed (exit $LASTEXITCODE)" }
-    }
-    finally { Pop-Location }
-
-    if (-not (Test-Path "$PluginBinDir\AutoCADMCPPlugin.dll")) {
-        throw "Build succeeded but AutoCADMCPPlugin.dll not found at: $PluginBinDir"
-    }
-    Write-Host "    OK Plugin DLL: $PluginBinDir\AutoCADMCPPlugin.dll" -ForegroundColor Green
-}
-else {
-    Write-Host "[ 1/6 ] Skipping C# plugin build (-SkipBuild)" -ForegroundColor Gray
-    if (-not (Test-Path "$PluginBinDir\AutoCADMCPPlugin.dll")) {
-        throw "SkipBuild set but DLL not found: $PluginBinDir\AutoCADMCPPlugin.dll"
-    }
+# Step 1: Plugin builds happen per AutoCAD version before each MSI is packed.
+Write-Host "[ 1/6 ] Plugin build target(s):" -ForegroundColor Yellow
+foreach ($targetAutoCADVersion in $AutoCADVersions) {
+    $targetFramework = Get-PluginTargetFramework $targetAutoCADVersion
+    $effectiveAutoCADInstallDir = Get-EffectiveAutoCADInstallDir $targetAutoCADVersion
+    Write-Host "    AutoCAD $targetAutoCADVersion -> $targetFramework, refs: $effectiveAutoCADInstallDir"
 }
 
 # Step 2: Build Node.js server
@@ -204,6 +233,8 @@ New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
 $builtMsis = [System.Collections.Generic.List[string]]::new()
 
 foreach ($targetAutoCADVersion in $AutoCADVersions) {
+    $pluginBuild = Build-PluginForVersion $targetAutoCADVersion
+
     $msiName = "DeepBimMCP-AutoCAD${targetAutoCADVersion}-v$ProductVersion.msi"
     $outputMsi = [System.IO.Path]::Combine($OutputDir, $msiName)
     $outputName = [System.IO.Path]::GetFileNameWithoutExtension($msiName)
@@ -221,6 +252,8 @@ foreach ($targetAutoCADVersion in $AutoCADVersions) {
         "--configuration", $Configuration,
         "/p:ProductVersion=$ProductVersion",
         "/p:AutoCADVersion=$targetAutoCADVersion",
+        "/p:PluginTargetFramework=$($pluginBuild.TargetFramework)",
+        "/p:PluginBinDir=$($pluginBuild.BinDir)",
         "/p:OutputName=$outputName",
         "--nologo"
     )

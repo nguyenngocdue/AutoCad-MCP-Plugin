@@ -15,20 +15,22 @@ dotnet build DeepBimMCP.AutoCAD.Installer.wixproj --configuration Release /p:Pro
 
 Output: `installers\msi\output\DeepBimMCP-AutoCAD2024-v1.0.0.msi`
 
-> `AutoCADVersion` có thể là `2024`, `2025`, `2026`, ... (default: `2025`). Các file MSI khác tên trong `installers\msi\output` sẽ được giữ lại.
+> `AutoCADVersion` hỗ trợ `2018-2027` (default: `2024`). Các file MSI khác tên trong `installers\msi\output` sẽ được giữ lại.
 
 Build bằng script có thể nhập một version, danh sách version, hoặc cả range `2018-2027`:
 
+> Script sẽ build DLL theo từng target: AutoCAD 2018-2024 dùng `net48`, AutoCAD 2025-2026 dùng `net8.0-windows`, AutoCAD 2027 dùng `net10.0-windows`.
+
 ```powershell
 .\installers\msi\Build-Installer.ps1 -AutoCADVersion 2027
-.\installers\msi\Build-Installer.ps1 -AutoCADVersion 2018,2024,2027
+.\installers\msi\Build-Installer.ps1 -AutoCADVersion 2025,2026,2027
 .\installers\msi\Build-Installer.ps1 -AutoCADVersion 2018-2027
 ```
 
 Nếu muốn build DLL theo bộ AutoCAD API thấp nhất để dùng chung cho nhiều bản, truyền thêm `AutoCADInstallDir`:
 
 ```powershell
-.\installers\msi\Build-Installer.ps1 -AutoCADVersion 2018-2027 -AutoCADInstallDir "C:\Program Files\Autodesk\AutoCAD 2018"
+.\installers\msi\Build-Installer.ps1 -AutoCADVersion 2025 -AutoCADInstallDir "C:\Program Files\Autodesk\AutoCAD 2025"
 ```
 
 ## 3. Install
@@ -50,7 +52,7 @@ After installing, update `.vscode/mcp.json`:
 
 ```powershell
 # Full pipeline (build C# + server + MSI)
-.\installers\msi\Build-Installer.ps1 -AutoCADVersion 2025
+.\installers\msi\Build-Installer.ps1 -AutoCADVersion 2024
 
 # Build all MSI versions from AutoCAD 2018 to 2027
 .\installers\msi\Build-Installer.ps1 -AutoCADVersion 2018-2027
